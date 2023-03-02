@@ -83,6 +83,8 @@ for _ in 0...2 {
 //MARK: - Scheduler
 //receive(on:) - downstream의 실행 컨텍스트의 영역 변경
 //subscribe(on:) - upstream의 실행 컨텍스트의 영역 변경
+private var isRun = true
+
 let globalPassThroughSubject = PassthroughSubject<String, Never>()
 let globalSubscriber = globalPassThroughSubject
     .sink { value in
@@ -94,5 +96,10 @@ DispatchQueue.global().async {
     globalPassThroughSubject.send("isMain")
 }
 
-RunLoop.current.run()
+while isRun {
+    if let input = readLine() {
+        isRun = input.isEmpty ? false : true
+    }
+    RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+}
 //dispatchMain()
